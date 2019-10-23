@@ -4,7 +4,7 @@ Created on 10. 10. 2016
 @author: neneko
 '''
 
-from Trzba import *
+
 from lxml import etree
 from signing import Signing
 import wsse
@@ -12,9 +12,9 @@ import requests
 from eet_ns import NS_EET_URL
 import utils
 import eet_exceptions
+import trzba
 
 class EET:
-
     def __init__(self, cert_file, password, provozovna=1, pokladna='lidicka', testing=True, eet_url='https://pg.eet.cz:443/eet/services/EETServiceSOAP/v3'):
         self._cert_file = cert_file
         self._testing = testing
@@ -27,11 +27,11 @@ class EET:
         cn = [x for x in components if x[0] == b'CN']
         assert(len(cn) == 1)
         self._dic = cn[0][1].decode('utf8')
-        print('DIC: %s' % self._dic)
+#        print('DIC: %s' % self._dic)
 
     def create_payment(self, poradi, amount, first=True, test=True):
-        header = TrzbaHeader(first, test)
-        return Trzba(header, poradi, self._dic, self._provozovna, self._pokladna, amount)
+        header = trzba.TrzbaHeader(first, test)
+        return trzba.Trzba(header, poradi, self._dic, self._provozovna, self._pokladna, amount)
 
     def send_payment(self, payment):
         trzba_xml = payment.xml(self._signing)
@@ -45,7 +45,7 @@ class EET:
         resp.raise_for_status()
         try:
             reply = etree.XML(resp.content)
- #           print(etree.tostring(reply, pretty_print=4))
+#            print(etree.tostring(reply, pretty_print=4))
             header = utils.find_node(reply, 'Hlavicka', NS_EET_URL)
         except etree.XMLSyntaxError as e:
             raise eet_exceptions.BadResponse('Failed to parse response from server (%s)'%(str(e)))
@@ -78,3 +78,5 @@ class EET:
             except eet_exceptions.NodeNotFound:
                 raise eet_exceptions.BadResponse('Failed to get data from server response')
         return response 
+
+

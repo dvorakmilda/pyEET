@@ -1,6 +1,6 @@
-from EET import EET
-from Trzba import *
-
+from . import eet
+from . import trzba
+from signing import Signing
 
 if __name__ == '__main__':
     import sys
@@ -8,9 +8,9 @@ if __name__ == '__main__':
 
     logging.basicConfig(level=logging.INFO)
 
-    e = EET(sys.argv[1], sys.argv[2], 1, 'stodola')
-    p = e.create_payment('P12321', 3248, test=False)
-    p.set_amount(TAX_BASIC, 1000, 210)
-    r = e.send_payment(p)
-    print(r)
+#    e = EET(sys.argv[1], sys.argv[2], 1, 'stodola')
+#    p = e.create_payment('P12321', 3248, test=False)
+#    p.set_amount(TAX_BASIC, 1000, 210)
+#    r = e.send_payment(p)
+#    print(r)
     
